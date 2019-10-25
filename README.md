@@ -13,6 +13,7 @@ go get github.com/JojiiOfficial/Iptables-log-parser
 reading the file ("/var/log/Tripwire21") line by line
 ```Go
 err := ParseFileByLines("/var/log/Tripwire21", func(log *LogEntry) {
+  //This callback gets fired for each logEntry in the given file
   fmt.Println(log)
 })
 if err != nil {
