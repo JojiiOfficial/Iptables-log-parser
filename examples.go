@@ -1,4 +1,4 @@
-package main
+package iptablesparser
 
 import "fmt"
 
@@ -20,4 +20,3 @@ func main() {
 		fmt.Println(log)
 	}
 }
-
