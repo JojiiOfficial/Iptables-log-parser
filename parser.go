@@ -25,14 +25,16 @@ func ParseFileByLines(filename string, callback func(*LogEntry)) error {
 
 	scanner := bufio.NewScanner(logFile)
 	scanner.Split(bufio.ScanLines)
+	var lastTime time.Time
 	for scanner.Scan() {
 		line := scanner.Text()
 		if len(strings.Trim(line, " ")) == 0 {
 			continue
 		}
 		logEntry, err := parseLogEntry(line)
-		if err == nil {
+		if err == nil && (lastTime != logEntry.Time) {
 			callback(logEntry)
+			lastTime = logEntry.Time
 		}
 	}
 

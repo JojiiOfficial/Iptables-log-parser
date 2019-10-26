@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
+
 	iptablesparser "github.com/JojiiOfficial/Iptables-log-parser"
 )
 
 func main() {
 	//examle for reading the file line by line
-	err := iptablesparser.ParseFileByLines("/var/log/Tripwire21", func(log *iptablesparser.LogEntry){
+	err := iptablesparser.ParseFileByLines("/var/log/Tripwire21", func(log *iptablesparser.LogEntry) {
 		fmt.Println(log)
 	})
 	if err != nil {
