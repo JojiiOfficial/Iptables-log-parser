@@ -25,21 +25,45 @@ func ParseFileByLines(filename string, callback func(*LogEntry)) error {
 
 	scanner := bufio.NewScanner(logFile)
 	scanner.Split(bufio.ScanLines)
-	var lastTime time.Time
+	lastIP := make(map[int](ipToTime), 4)
+	i := 0
 	for scanner.Scan() {
 		line := scanner.Text()
 		if len(strings.Trim(line, " ")) == 0 {
 			continue
 		}
 		logEntry, err := parseLogEntry(line)
-		if err == nil && (lastTime != logEntry.Time) {
+		if err == nil {
+			if logEntry.In == "" && logEntry.Out == "" {
+				continue
+			}
+			has, index := hasIPInList(lastIP, logEntry.Src)
+			if has && lastIP[index].time.Unix() <= logEntry.Time.Unix()+5 {
+				lastIP[index] = ipToTime{}
+				continue
+			}
 			callback(logEntry)
-			lastTime = logEntry.Time
+			lastIP[i%4] = ipToTime{ip: logEntry.Src, time: logEntry.Time}
+			i++
 		}
 	}
 
 	logFile.Close()
 	return nil
+}
+
+type ipToTime struct {
+	ip   string
+	time time.Time
+}
+
+func hasIPInList(mp map[int](ipToTime), ip string) (bool, int) {
+	for i := 0; i < 4; i++ {
+		if mp[i].ip == ip {
+			return true, i
+		}
+	}
+	return false, -1
 }
 
 //ParseFile parses a file and returns an array with all found entries
