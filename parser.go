@@ -82,6 +82,7 @@ func parseLogEntry(content string) (*LogEntry, error) {
 	if !strings.Contains(content, "Tripwire") {
 		return nil, errors.New("not a tripwire log")
 	}
+	content = strings.ReplaceAll(strings.ReplaceAll(content, "   ", " "), "  ", " ")
 	logItems := strings.Split(content, " ")
 	entry := &LogEntry{}
 	for _, val := range logItems {
